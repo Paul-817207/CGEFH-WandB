@@ -1,3 +1,5 @@
+// for Cessna 172M C-GEFT
+
 //function to convert litres to usg and put litres value in usg field
 function convert_litres(tank){
 	
@@ -48,23 +50,23 @@ function convert_litres(tank){
 
 function makeCalculation() { 
   // Constants specific to C-GEFH
-  const MAX_GROSS_WEIGHT = 1220;
-  const WHEEL_BASIC_EMPTY_WEIGHT = 770;
-  const SKI_BASIC_EMPTY_WEIGHT = 782;
-  const AIRCRAFT_ARM_WHEELS = 13.75;//10.75;
-  const AIRCRAFT_ARM_SKIS = 13.59;//10.63;
+  const MAX_GROSS_WEIGHT = 2300.0;
+  const BASIC_EMPTY_WEIGHT = 1473.76;
+  const AIRCRAFT_ARM_WHEELS = 41.89;//aft of datum
   const OIL_QUART_LBS = 1.875;
   const FUEL_USG_LBS = 6.0;
   const FUEL_BURN_USGPH = 10; //estimated US gallons per hour of fuel burn of this engine at cruise power setting
-  const PILOT_ARM = 36.0;
-  const PASS_ARM = 9.0;
-  const BAGGAGE_ARM = 49.0;
-  const FUEL_MAIN_ARM = (-18.0);
-  const FUEL_WING_ARM = 24.0;
-  const OIL_ARM = (-29.0);
+  const PILOT_F_PASS_ARM = 37.0;//Pilot and front passenger arm " aft of datum in normal seated position. (34.0" to 46.0" seat adjust range)
+  const PASS_ARM_REAR = 73.0;//rear passenger arm " aft of datum
+  const BAGGAGE_1_ARM = 95.0;//Baggage area #1 arm " aft of datum 120 lbs max
+  const BAGGAGE_2_ARM = 123.0;//Baggage area #2 arm " aft of datum 50 lbs max PLUS Baggage are 1 & 2 max 120 lbs
+   
+  const FUEL_MAIN_ARM = (0.0);//Long range fuel tanks. 48usg useable
+
+  const OIL_ARM = (-13.3);//8 qts = 15 lbs can be used for all calculations
   const ARM_MIN = 10.6;
   const ARM_MAX = 22.7;
-  
+X  
   //variables to make the calculations
   let is_over_Gross_TO_weight = false;
   let is_over_Gross_LDG_weight = false;
@@ -218,11 +220,11 @@ function makeCalculation() {
   }
   
   if(pilot_lbs > 0)
-    take_off_moment += pilot_lbs * PILOT_ARM;
+    take_off_moment += pilot_lbs * PILOT_F_PASS_ARM;
   if(pass_lbs > 0)
-    take_off_moment += pass_lbs * PASS_ARM;
+    take_off_moment += pass_lbs * PASS_ARM_REAR;
   if(baggage_lbs > 0)
-    take_off_moment += baggage_lbs * BAGGAGE_ARM;
+    take_off_moment += baggage_lbs * BAGGAGE_1_ARM;
   if(oil_lbs > 0 || oil_lbs < 0)
 	take_off_moment += oil_lbs * OIL_ARM;
 
