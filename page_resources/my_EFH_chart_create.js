@@ -36,8 +36,8 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
    let tick_length = (chart_canvas.width * 0.025)/2; //set tick length relative to canvas width
    let Y_axis_length = (chart_canvas.height * 0.9); //set Y axis length relative to canvas height for future scaling
    let X_axis_length = (chart_canvas.width * 0.9); //let X axis length relative to canvas width for future scaling
-   let X_tick_offset = (X_axis_length / 8); //X ticks spacing
-   let Y_tick_offset = (Y_axis_length / 13); //Y ticks spacing
+   let X_tick_offset = (X_axis_length / 14); //X ticks spacing divide by number of desired tics
+   let Y_tick_offset = (Y_axis_length / 10); //Y ticks spacing divide by number of desired tics
    let X_axis_margin = (chart_canvas.width-X_axis_length)/2; //margin between edge of canvas and start of chart relative for future scaling
    let Y_axis_margin = (chart_canvas.height - Y_axis_length)/2; //magin for Y axis chart for scaling
    let XY_axis_beginX = X_axis_margin; //set X axis zero X position relative to canvas for future scaling
@@ -95,7 +95,7 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  //fill in X axis ticks
 	  canvas_ctx.beginPath();
 	  canvas_ctx.lineWidth = 1;
-	  for(let i=1; i<9; i++ ){
+	  for(let i=1; i<15; i++ ){ //i<9 is the number of x tics.  9 for SBM but need 15 for EFH
 		 //draw the tick 
 		 canvas_ctx.beginPath();
          canvas_ctx.moveTo(XY_axis_beginX + X_tick_offset*i, XY_axis_beginY + tick_length);
@@ -103,29 +103,29 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 		 canvas_ctx.stroke();
 		 
       }
-	  disp_count = 10;
+	  disp_count = 35;// starting number of x axis
 	  canvas_ctx.fillStyle = 'rgb(0,0,0)';	
 	  canvas_ctx.beginPath();
 	  canvas_ctx.textAlign = 'center';
 	  canvas_ctx.font = font_ticks;
-	  canvas_ctx.fillText('8', XY_axis_beginX, XY_axis_beginY + tick_length*2.1);
-	  for(let i=1; i<9; i++ ){
+	  canvas_ctx.fillText('34', XY_axis_beginX, XY_axis_beginY + tick_length*2.1);
+	  for(let i=1; i<15; i++ ){//as above, for the number of tics on x axis
          //draw the text number below the tick
 		 canvas_ctx.fillText(disp_count.toString(10), XY_axis_beginX + X_tick_offset*i, XY_axis_beginY + tick_length*2);
-		 disp_count = disp_count + 2;
+		 disp_count = disp_count + 1;
       }
 	  
 	  //fill Y axis ticks
-	  disp_count = 750;
+	  disp_count = 1500;//y axis starting number
 	  canvas_ctx.textAlign = 'end';
 	  canvas_ctx.fillText(disp_count.toString(10), XY_axis_beginX - tick_length, XY_axis_beginY); 
-	  for(let i=1; i<14; i++){
+	  for(let i=1; i<11; i++){
 	     //draw the tick 
 		 canvas_ctx.beginPath();
          canvas_ctx.moveTo(XY_axis_beginX - tick_length, XY_axis_beginY - Y_tick_offset*i);
 	     canvas_ctx.lineTo(XY_axis_beginX + tick_length, XY_axis_beginY - Y_tick_offset*i);	
 		 canvas_ctx.stroke();
-		 disp_count = disp_count + 50;
+		 disp_count = disp_count + 100;//this magic # is the lbs increase per tic on y axis
 		 canvas_ctx.fillText(disp_count.toString(10), XY_axis_beginX - tick_length, XY_axis_beginY - Y_tick_offset*i);
 	  }
 
@@ -157,13 +157,14 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  //set display color to warning level
 	  canvas_ctx.fillStyle = display_colour;
 	  
+//xx working here	  
 
 	  //calculate Take Off point for plotting to the chart
 	  //X axis calculation X_tick_offset  = 90. 90/2 = 45 = 1 inch CG. so 10 in CG = (10 * (X_tick_offset/2)) - (8*(X_tick_offset/2)) + xmargin	  
 	  let TO_xvalue = (TO_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
 	  //Y axis calculation (TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) + Y_axis_margin *-1
 	  let TO_yvalue = (Y_axis_margin+Y_axis_length) -((TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
-
+alert('X plot'+ TO_xvalue);
 	  //Paint the take off Weight and Balance to the chart
 	  canvas_ctx.font = font_labels;
       canvas_ctx.beginPath();  
