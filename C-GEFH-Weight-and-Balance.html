@@ -23,6 +23,10 @@
 <!-- 
 TODO list
 
+-estimated fuel use for flight should not be allowed to be less than the fuel in the tanks 
+
+-plus I have to consider how the fuel burn factors in to different things
+
 -allow pilot to enter estimated fuel burn in gph
 
 -remove spinners from number inputs
@@ -102,7 +106,7 @@ TODO list
 		 
 		 <p>
 		 <label>Fuel,Long range tanks(48 USG max usable) USG:</label>  
-         <input onkeyup = "convert_litres('main_usg');" type="number" id="main_fuel_usg" min="0" max="10" step="1" value=0 ></input>
+         <input onkeyup = "convert_litres('main_usg');" type="number" id="main_fuel_usg"  value=0 ></input>
 		 <label>Litres:</label>
 		 <input onkeyup = "convert_litres('main_litres');" type="number" id="main_fuel_litres" value=0></input>
 		 <font color="red"><span id="main_fuel_error"></span></font>

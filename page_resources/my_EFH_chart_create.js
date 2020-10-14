@@ -137,13 +137,29 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  // x point formula = (COFGVALUE *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin
 	  // y point formula = (Y_axis_margin+Y_axis_length) -((WEIGHTVALUE * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)))
 	  canvas_ctx.beginPath();
-	  canvas_ctx.moveTo((10.6 *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1220 * (Y_tick_offset/50)) - (750*(Y_tick_offset/50))));
-	  canvas_ctx.lineTo((22.7 *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1220 * (Y_tick_offset/50)) - (750*(Y_tick_offset/50))));
-	  canvas_ctx.lineTo((22.7 *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((750 * (Y_tick_offset/50)) - (750*(Y_tick_offset/50))));
-	  canvas_ctx.lineTo((10.6 *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((750 * (Y_tick_offset/50)) - (750*(Y_tick_offset/50))));
-	  canvas_ctx.lineTo((10.6 *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1220 * (Y_tick_offset/50)) - (750*(Y_tick_offset/50))));
+	  
+	  //bounding box of Normal catagory
+	  canvas_ctx.moveTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1950 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((38.5 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((2300 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((47.3 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((2300 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((47.3 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
 	  canvas_ctx.stroke();
 	  canvas_ctx.fill();
+	  
+	  //bounding box of Utility category
+	  canvas_ctx.fillStyle = 'rgba(204, 230, 103, 0.2)';
+	  canvas_ctx.beginPath();
+	  canvas_ctx.moveTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1950 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((35.5 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((2000 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((40.5 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((2000 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((40.5 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.lineTo((35.0 *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin, (Y_axis_margin+Y_axis_length) -((1500 * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100))));
+	  canvas_ctx.stroke();
+	  canvas_ctx.fill();
+	  
 	  
 	  //Show fuel warning at top of chart in RED to alert when reserve is lower than about 30 minutes cruise
 	  canvas_ctx.textAlign = 'start';
@@ -161,10 +177,12 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 
 	  //calculate Take Off point for plotting to the chart
 	  //X axis calculation X_tick_offset  = 90. 90/2 = 45 = 1 inch CG. so 10 in CG = (10 * (X_tick_offset/2)) - (8*(X_tick_offset/2)) + xmargin	  
-	  let TO_xvalue = (TO_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
+	  // from SBM => let TO_xvalue = (TO_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
+	  let TO_xvalue = (TO_CofG *(X_tick_offset)) - (34*(X_tick_offset)) + X_axis_margin;
 	  //Y axis calculation (TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) + Y_axis_margin *-1
-	  let TO_yvalue = (Y_axis_margin+Y_axis_length) -((TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
-alert('X plot'+ TO_xvalue);
+	  // from SMB => let TO_yvalue = (Y_axis_margin+Y_axis_length) -((TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
+	  let TO_yvalue = (Y_axis_margin+Y_axis_length) -((TO_weight * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100)) );
+
 	  //Paint the take off Weight and Balance to the chart
 	  canvas_ctx.font = font_labels;
       canvas_ctx.beginPath();  
@@ -176,9 +194,11 @@ alert('X plot'+ TO_xvalue);
 	  
 	  //calculate Landing point for plotting to the chart
 	  //X axis calculation X_tick_offset  = 90. 90/2 = 45 = 1 inch CG. so 10 in CG = (10 * (X_tick_offset/2)) - (8*(X_tick_offset/2)) + xmargin	  
-	  let LDG_xvalue = (landing_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
+	  // from SMB => let LDG_xvalue = (landing_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
+	  let LDG_xvalue = (landing_CofG *(X_tick_offset))-(34*(X_tick_offset)) + X_axis_margin;
 	  //Y axis calculation (TO_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) + Y_axis_margin *-1
-	  let LDG_yvalue = (Y_axis_margin+Y_axis_length) -((landing_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
+	  // from SBM => let LDG_yvalue = (Y_axis_margin+Y_axis_length) -((landing_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
+	  let LDG_yvalue = (Y_axis_margin+Y_axis_length) -((landing_weight * (Y_tick_offset/100)) - (1500*(Y_tick_offset/100)) );
 	  
 	  //Paint the Landing Weight and Balance to the chart
 	  canvas_ctx.fillStyle = display_colour;
