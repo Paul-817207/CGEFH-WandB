@@ -19,15 +19,16 @@
 </style>
 
 </head>
-	
-<!-- 
+
+<!--
 TODO list
 
--estimated fuel use for flight should not be allowed to be less than the fuel in the tanks 
+-estimated fuel use for flight should not be allowed to be less than the fuel in the tanks
 
 -plus I have to consider how the fuel burn factors in to different things
 
--allow pilot to enter estimated fuel burn in gph
+-adjust text on the chart indicating Take off and landing Centre of Gravity so it does not go off
+the edge of the canvas
 
 -remove spinners from number inputs
 
@@ -52,7 +53,7 @@ TODO list
    <!--load airplane images here into the html document, but do not display them. used by
    the javaScript to display on the canvas of the chart
    -->
-   
+
 
    <h2>Weight and balance calculator for Cessna 172M C-GEFH</h2>
 
@@ -62,10 +63,10 @@ TODO list
    <p>
       Please read below how these calulations are performed and the information that the calculations are based on. Remember, as always, it is the responsibility of the PIC to veriify the information is correct and make the final decision for the flight.
    </p>
-   
+
    <NOSCRIPT>
       <font color="red">
-      <H3>This page uses JavaScript</H3> 
+      <H3>This page uses JavaScript</H3>
       <ul>
          <li>Please use a JavaScript-enabled browser.
          <li>Make sure that JavaScript is enabled.
@@ -73,45 +74,45 @@ TODO list
 	  </font>
    </NOSCRIPT>
 
-   
+
    <h3 center> Enter the information for the planned flight </h3>
-   
+
    <form id="Weight_input_form">
-      
-	  <div class="Weight entry form">  
+
+	  <div class="Weight entry form">
 
 		<p>
-         <label>Pilot & front Passenger lbs:</label> 
+         <label>Pilot & front Passenger lbs:</label>
          <input onkeyup = "makeCalculation()" type="number" id="pilot_fpx_weight" value=0></input>
 		 <font color="red"><span id="pilot_fpx_lbs_error"></span></font>
 		 </p>
-		 
+
 		 <p>
-		 <label>Rear Passengers lbs:</label>  
-         <input onkeyup = "makeCalculation()" type="number" id="pass_rear_weight" value=0></input> 
+		 <label>Rear Passengers lbs:</label>
+         <input onkeyup = "makeCalculation()" type="number" id="pass_rear_weight" value=0></input>
 		 <font color="red"><span id="pass_rear_lbs_error"></span></font>
 		 </p>
-		 
+
 		 <p>
-		 <label>*Baggage area #1 (120 lbs max)lbs:</label>  
+		 <label>*Baggage area #1 (120 lbs max)lbs:</label>
          <input onkeyup = "makeCalculation()" type="number" id="baggage1_weight"  value=0 ></input>
-         <font color="red"><span id="baggage1_lbs_error"></span></font>		 
-		 </p> 
-		 
-		 <p>
-		 <label>*Baggage area #2 (50 lbs max)lbs:</label>  
-         <input onkeyup = "makeCalculation()" type="number" id="baggage2_weight"  value=0 ></input>
-         <font color="red"><span id="baggage2_lbs_error"></span></font>		 
+         <font color="red"><span id="baggage1_lbs_error"></span></font>
 		 </p>
-		 
+
 		 <p>
-		 <label>Fuel,Long range tanks(48 USG max usable) USG:</label>  
+		 <label>*Baggage area #2 (50 lbs max)lbs:</label>
+         <input onkeyup = "makeCalculation()" type="number" id="baggage2_weight"  value=0 ></input>
+         <font color="red"><span id="baggage2_lbs_error"></span></font>
+		 </p>
+
+		 <p>
+		 <label>Fuel,Long range tanks(48 USG max usable) USG:</label>
          <input onkeyup = "convert_litres('main_usg');" type="number" id="main_fuel_usg"  value=0 ></input>
 		 <label>Litres:</label>
 		 <input onkeyup = "convert_litres('main_litres');" type="number" id="main_fuel_litres" value=0></input>
 		 <font color="red"><span id="main_fuel_error"></span></font>
 		 </p>
-		 
+
 		 <p>
 		 <label>Estimated fuel burn USgph:</label>
 		 <input onkeyup="convert_litres('burn_usg');" type="number" id="est_fuel_burn_usgph" value=9></input>
@@ -119,7 +120,7 @@ TODO list
 		 <input onkeyup = "convert_litres('burn_litres');" type="number" id="est_fuel_burn_lph" value=34.1></input>
 		 <span id="fuel_burn_error" style="color:red"></span>
 		 </p>
-		 
+
 		 <p>
 		 <label>Estimated fuel use for flight, USG: </label>
 		 <input onkeyup = "convert_litres('est_fuel_usg');" type="number" id="flight_fuel_used_usg" value=0></input>
@@ -127,7 +128,7 @@ TODO list
 		 <input onkeyup = "convert_litres('est_fuel_litres');" type="number" id="estimated_fuel_litres" value=0></input>
 		 <font color="red"><span id="fuel_for_flight_error"></span></font>
 		 </p>
-      </div> 
+      </div>
 
    </form>
    <p>
@@ -135,19 +136,19 @@ TODO list
    <button onclick="makeCalculation();">CALCULATE</button>
    NOTE: see the text results below the chart for detailed results.
    </p>
-   
+
    <!-- 800 x 600 canvas size
-   <canvas width = "800" height = "600" id = "output_chart" >An ERROR has occured and a Weight and Balance chart will not be drawn here, probably because you are using an unsupported web browser or javaScript might be disabled. Sorry.</canvas>     
+   <canvas width = "800" height = "600" id = "output_chart" >An ERROR has occured and a Weight and Balance chart will not be drawn here, probably because you are using an unsupported web browser or javaScript might be disabled. Sorry.</canvas>
    -->
-   <!-- 640 x 480 canvas size 
+   <!-- 640 x 480 canvas size
    <canvas width = "640" height = "480" id = "output_chart" onClick = "zoom();" >An ERROR has occured and a Weight and Balance chart will not be drawn here, probably because you are using an unsupported web browser or javaScript might be disabled. Sorry.</canvas>
    -->
    <!-- 320 x 240 canvas size -->
    <canvas width = "320" height = "240" id = "output_chart" onClick = "zoom();" >An ERROR has occured and a Weight and Balance chart will not be drawn here, probably because you are using an unsupported web browser or javaScript might be disabled. Sorry.</canvas>
-      
-   
+
+
    <p id="output"><!--This paragraph is where the output of the javaScript function goes --></p>
-   
+
    <br>
    <p>
       The weight and balance calculations are based on the information provided on the "Weight and Balance" document descibed below and is not valid otherwise.<br>
