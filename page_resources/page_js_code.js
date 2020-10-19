@@ -53,7 +53,7 @@ function makeCalculation() {
   // Constants specific to C-GEFH
   const MAX_GROSS_WEIGHT = 2300.0;
   const BASIC_EMPTY_WEIGHT = 1473.76;
-  const AIRCRAFT_ARM_WHEELS = 35.5;//41.89;//aft of datum is from the last W&B sheet
+  const AIRCRAFT_ARM_WHEELS = 41.89;//41.89;//aft of datum is from the last W&B sheet
   const OIL_QUART_LBS = 1.875;
   const FUEL_USG_LBS = 6.0;
   const FUEL_BURN_USGPH = 10; //estimated US gallons per hour of fuel burn of this engine at cruise power setting
@@ -314,66 +314,139 @@ function makeCalculation() {
   //tests because the answer has been found
   
   findTOCG: {
-    //first check area #1 for take off CofG
+    //first check NORMAL area #1 for take off CofG
     if (CG_takeoff > 40.5 && CG_takeoff <= 47.3 && take_off_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1	  
 	  in_NORMAL_envelopeTO = true;
+	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
 	  is_outside_TO_CG_envelope = false;
 	  break findTOCG;
     }
-    //next, it was not in area #1 so next check if point is in area #2
+    //it was not in area above, next check if point is in NORMAL area #2
 	if(CG_takeoff >= 38.5 && CG_takeoff <= 40.5 && take_off_weight > 2000 && take_off_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #2
 	  in_NORMAL_envelopeTO = true;
+	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
 	  is_outside_TO_CG_envelope = false;	  
       break findTOCG;
 	}
-	//next, point was not in area #1 or area #2, next check if it is in triangle area #3
+	//point was not in areas above, next check if it is in UTILITY area #4
+	if (CG_takeoff >= 35.0 && CG_takeoff <= 40.5 && take_off_weight <= 1950){//all true means point is in UTILITY area #4	  
+	  in_NORMAL_envelopeTO = false;
+	  in_UTILITY_envelopeTO = true;
+	  is_over_Gross_TO_weight = false;
+	  is_outside_TO_CG_envelope = false;
+	  break findTOCG;
+    }
+	//point was not in areas above, next check if it is in UTILITY area #5
+	if (CG_takeoff >= 35.5 && CG_takeoff <= 40.5 && take_off_weight >= 1950 && take_off_weight <= 2000){//all true means point is in UTILITY area #5	  
+	  in_NORMAL_envelopeTO = false;
+	  in_UTILITY_envelopeTO = true;
+	  is_over_Gross_TO_weight = false;
+	  is_outside_TO_CG_envelope = false;
+	  break findTOCG;
+    }
+	//point was not in area above, next check if it is in NORMAL triangle area #3
 	let W1 = 0.0;
 	let W2 = 0.0;
 	W1=( 35.5*(2300-2000)+(take_off_weight-2000)*(38.5-35.5)-CG_takeoff*(2300-2000) )/( (2000-2000)*(38.5-35.5)-(38.5-35.5)*(2300-2000) );
 	W2=( take_off_weight-2000-W1*(2000-2000) )/( 2300-2000 );
 	if(W1 >= 0 && W2 >=0 && (W1+W2) <=1){//all are true, we are inside of the area #3 NORMAL triangle
 	  in_NORMAL_envelopeTO = true;
+	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
 	  is_outside_TO_CG_envelope = false;
 	  break findTOCG;	
 	}
-	
-	alert('need to set all flags indicating not in any  TO envelope !');
+	//point was not in areas above, next check if it is in UTILITY triangle area #6
+	W1= ( 35.0*(2000-1950)+(take_off_weight-1950)*(35.5-35.0)-CG_takeoff*(2000-1950) )/( (1950-1950)*(35.5-35.0)-(35.5-35.0)*(2000-1950) );
+	W2= ( take_off_weight-1950-W1*(1950-1950) )/( 2000-1950 );
+	if(W1 >= 0 && W2 >=0 && (W1+W2) <=1){//all are true, we are inside of the area #6 UTILITY triangle
+	  in_NORMAL_envelopeTO = false;
+	  in_UTILITY_envelopeTO = true;
+	  is_over_Gross_TO_weight = false;
+	  is_outside_TO_CG_envelope = false;
+	  break findTOCG;	
+	}
+	//NOW, if it is not in any of the above 6 areas, then it must be outside of the NORMAL and UTILITY envelope
+	//set all flags accordingly
+    in_NORMAL_envelopeTO = false;
+	in_UTILITY_envelopeTO = false;
+	is_outside_TO_CG_envelope = true;
+	if (take_off_weight > 2300){
+	  is_over_Gross_TO_weight = true;
+	}else{
+	  is_over_Gross_TO_weight = false;
+	}
   }//end of labeled block of code "findTOCG"
   
   findLDGCG: {
-	//check area #1 for landing CofG
+	//check NORMAL area #1 for landing CofG
     if (CG_landing > 40.5 && CG_landing <= 47.3 && landing_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1	  
 	  in_NORMAL_envelopeLDG = true;
+	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
 	  is_outside_LDG_CG_envelope = false;
 	  break findLDGCG;
     }
-	//next, it was not in area #1 so next check if point is in area #2
+	//it was not in area above so next check if point is in NORMAL area #2
 	if(CG_landing >= 38.5 && CG_landing <= 40.5 && landing_weight > 2000 && landing_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #2
 	  in_NORMAL_envelopeLDG = true;
+	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
 	  is_outside_LDG_CG_envelope = false;	  
       break findLDGCG;
 	}
-	//next, point was not in area #1 or area #2, next check if it is in triangle area #3
+	//point was not in areas above, next check if it is in UTILITY area #4
+	if (CG_landing >= 35.0 && CG_landing <= 40.5 && landing_weight <= 1950){//all true means point is in UTILITY area #4	  
+	  in_NORMAL_envelopeLDG = false;
+	  in_UTILITY_envelopeLDG = true;
+	  is_over_Gross_LDG_weight = false;
+	  is_outside_LDG_CG_envelope = false;
+	  break findLDGCG;
+    }
+	//point was not in areas above, next check if it is in UTILITY area #5
+	if (CG_landing >= 35.5 && CG_landing <= 40.5 && landing_weight >= 1950 && landing_weight <= 2000){//all true means point is in UTILITY area #5	  
+	  in_NORMAL_envelopeLDG = false;
+	  in_UTILITY_envelopeLDG = true;
+	  is_over_Gross_LDG_weight = false;
+	  is_outside_LDG_CG_envelope = false;
+	  break findLDGCG;
+    }
+	//point was not in area above, next check if it is in NORMAL triangle area #3
 	let W1 = 0.0;
 	let W2 = 0.0;
 	W1=( 35.5*(2300-2000)+(landing_weight-2000)*(38.5-35.5)-CG_landing*(2300-2000) )/( (2000-2000)*(38.5-35.5)-(38.5-35.5)*(2300-2000) );
 	W2=( landing_weight-2000-W1*(2000-2000) )/( 2300-2000 );
 	if(W1 >= 0 && W2 >=0 && (W1+W2) <=1){//all are true, we are inside of the area #3 NORMAL triangle
 	  in_NORMAL_envelopeLDG = true;
+	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
 	  is_outside_LDG_CG_envelope = false;	  
       break findLDGCG;	
 	}
-	
-	alert('need to set all flags indicating not in any LDG envelope !');
+	//point was not in areas above, next check if it is in UTILITY triangle area #6
+	W1=( 35.0*(2000-1950)+(landing_weight-1950)*(35.5-35.0)-CG_landing*(2000-1950) )/( (1950-1950)*(35.5-35.0)-(35.5-35.0)*(2000-1950) );
+	W2=( landing_weight-1950-W1*(1950-1950) )/( 2000-1950 );
+	if(W1 >= 0 && W2 >=0 && (W1+W2) <=1){//all are true, we are inside of the area #6 UTILITY triangle
+	  in_NORMAL_envelopeLDG = false;
+	  in_UTILITY_envelopeLDG = true;
+	  is_over_Gross_LDG_weight = false;
+	  is_outside_LDG_CG_envelope = false;	  
+      break findLDGCG;	
+	}
+	//NOW, if it is not in any of the above 6 areas, then it must be outside of the NORMAL and UTILITY envelope
+	//set all flags accordingly
+	in_NORMAL_envelopeLDG = false;
+	in_UTILITY_envelopeLDG = false;
+	is_outside_LDG_CG_envelope = true;
+	if(landing_weight > 2300){
+	  is_over_Gross_LDG_weight = true;
+	}else{
+	  is_over_Gross_LDG_weight = false;
+	}
   }//end of labeled block of code "findLDGCG
  
-//MUST DEFAULT flags to the negative if outside of the envelope
 //XX----ok to this point
 
   //check to see of there is enough of a fuel reserve.  and set a flag if it is not.
