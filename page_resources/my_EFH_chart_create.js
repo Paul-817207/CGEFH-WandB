@@ -167,6 +167,13 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  canvas_ctx.stroke();
 	  canvas_ctx.fill();
 	  
+	  //label NORMAL category
+	  canvas_ctx.textAlign = 'start';
+	  canvas_ctx.font = 'bold '+font_fuelwarning;
+	  canvas_ctx.fillStyle = '#291b42';
+	  canvas_ctx.fillText('NORMAL',X_axis_margin * 10,Y_axis_margin * 4);
+	  //label UTILITY category
+	  canvas_ctx.fillText('UTILITY',X_axis_margin * 5,Y_axis_margin * 9.8);
 	  
 	  //Show fuel warning at top of chart in RED to alert when reserve is lower than about 30 minutes cruise
 	  canvas_ctx.textAlign = 'start';
@@ -196,8 +203,16 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  canvas_ctx.fill();
 	  //label the take off point
 	  canvas_ctx.fillStyle = 'black';
-	  canvas_ctx.fillText(' __Take Off Weight & Balance point',TO_xvalue, TO_yvalue);
-	  
+
+	  //if label will run off of the right side of the canvas, then print the text to the left of the point it is labelling 
+	  if(TO_xvalue > (chart_canvas.width*0.6)){
+	    canvas_ctx.textAlign = 'end';
+	    canvas_ctx.fillText('Take Off Weight & Balance point__ ',TO_xvalue, TO_yvalue);
+	  }else{
+	    canvas_ctx.textAlign = 'start';
+	    canvas_ctx.fillText(' __Take Off Weight & Balance point',TO_xvalue, TO_yvalue);
+	  }
+	  	  
 	  //calculate Landing point for plotting to the chart
 	  //X axis calculation X_tick_offset  = 90. 90/2 = 45 = 1 inch CG. so 10 in CG = (10 * (X_tick_offset/2)) - (8*(X_tick_offset/2)) + xmargin	  
 	  // from SMB => let LDG_xvalue = (landing_CofG *(X_tick_offset/2))-(8*(X_tick_offset/2)) + X_axis_margin;
@@ -206,27 +221,66 @@ function chart_it(TO_weight, TO_CofG, landing_weight, landing_CofG, WandB_warnin
 	  // from SBM => let LDG_yvalue = (Y_axis_margin+Y_axis_length) -((landing_weight * (Y_tick_offset/50)) - (750*(Y_tick_offset/50)) );
 	  let LDG_yvalue = (Y_axis_margin+Y_axis_length) -((landing_weight * (Y_tick_offset/Y_AXIS_INCREMENT_VALUE)) - (Y_AXIS_START_WEIGHT*(Y_tick_offset/Y_AXIS_INCREMENT_VALUE)) );
 	  
+	  //Check if the points will be plotted off the canvas size and alert that they are OFF THE CHART
+	  canvas_ctx.textAlign = 'start';
+	  if(TO_xvalue > chart_canvas.width || TO_yvalue < 5 || LDG_xvalue > chart_canvas.width || LDG_yvalue < 5){
+	    canvas_ctx.fillStyle = RGB_RED;
+	    canvas_ctx.font = font_fuelwarning;
+	    canvas_ctx.fillText ('Points are OFF THE CHART, check input values!',
+		  XY_axis_beginX + X_axis_margin/2, Y_axis_margin*4);
+	  }
+      canvas_ctx.font = font_labels;
+	  
 	  //Paint the Landing Weight and Balance to the chart
 	  canvas_ctx.fillStyle = display_colour;
 	  canvas_ctx.beginPath();  
       canvas_ctx.arc( LDG_xvalue, LDG_yvalue, 4, 0, 2*Math.PI,false); 
 	  canvas_ctx.fill();
+	  
 	  //label the take off point
 	  canvas_ctx.fillStyle = 'black';
 	  //displace display if too close together
 	  if (chart_canvas.width > 320){
-	     //set label offset for large chart size 
+	     //set label Y offset for large chart size 
 	     if(( LDG_yvalue - TO_yvalue)>14){
-		   canvas_ctx.fillText(' __Landing Weight & Balance point',LDG_xvalue, LDG_yvalue);
+		   //set ldg label left or right of point
+		   if(LDG_xvalue > (chart_canvas.width*0.6)){
+			 canvas_ctx.textAlign = 'end';
+		     canvas_ctx.fillText('Landing Weight & Balance point__ ',LDG_xvalue, LDG_yvalue);
+		   }else{
+			 canvas_ctx.textAlign = 'start';
+		     canvas_ctx.fillText(' __Landing Weight & Balance point',LDG_xvalue, LDG_yvalue);
+		   }
 	     }else{
-		    canvas_ctx.fillText(' ~~Landing Weight & Balance point',LDG_xvalue, LDG_yvalue + 14); 
+			//set ldg label left or right of point
+			if(LDG_xvalue > (chart_canvas.width*0.6)){
+		      canvas_ctx.textAlign = 'end';
+		      canvas_ctx.fillText('Landing Weight & Balance point~~ ',LDG_xvalue, LDG_yvalue + 14);
+			}else{
+			  canvas_ctx.textAlign = 'start';
+		      canvas_ctx.fillText(' ~~Landing Weight & Balance point',LDG_xvalue, LDG_yvalue + 14); 
+			}
 		 }
 	  }else{
-	     //set label offset for small chart size 
+	     //set label Y offset for small chart size 
 	     if(( LDG_yvalue - TO_yvalue)>7){
-		   canvas_ctx.fillText(' __Landing Weight & Balance point',LDG_xvalue, LDG_yvalue);
+		   //set ldg label left or right of point
+		   if(LDG_xvalue > (chart_canvas.width*0.6)){
+		     canvas_ctx.textAlign = 'end';
+		     canvas_ctx.fillText('Landing Weight & Balance point__ ',LDG_xvalue, LDG_yvalue);  
+		   }else{
+		     canvas_ctx.textAlign = 'start';
+		     canvas_ctx.fillText(' __Landing Weight & Balance point',LDG_xvalue, LDG_yvalue);
+		   }
 	     }else{
-		    canvas_ctx.fillText(' ~~Landing Weight & Balance point',LDG_xvalue, LDG_yvalue + 7);
+			//set ldg label left or right of point
+		   if(LDG_xvalue > (chart_canvas.width*0.6)){
+			 canvas_ctx.textAlign = 'end';
+		     canvas_ctx.fillText('Landing Weight & Balance point~~ ',LDG_xvalue, LDG_yvalue + 7);
+		   }else{
+			 canvas_ctx.textAlign = 'start';
+		     canvas_ctx.fillText(' ~~Landing Weight & Balance point',LDG_xvalue, LDG_yvalue + 7);
+		   }
 	     }
 	  }
 	  
