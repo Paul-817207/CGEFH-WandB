@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head><title> C-GEFH Weight and Balance </title>
@@ -5,7 +6,7 @@
 
 <script src = "./page_resources/page_js_code.js" type = "text/javaScript" ></script>
 <script src = "./page_resources/my_EFH_chart_create.js" type = "text/javaScript"></script>
-<link rel="stylesheet" type="text/css" href="./page_resources/page_style_sheet.css"></link>
+<link rel="stylesheet" type="text/css" href="./page_resources/page_style_sheet.css">
 
 
 </head>
@@ -66,56 +67,91 @@ TODO list
 
    <form id="Weight_input_form">
 
-	  <div class="Weight entry form">
+	  <div class="WeightEntryForm">
 
-		<p>
-         <label>Pilot & front Passenger lbs:</label>
-         <input onkeyup = "makeCalculation()" type="number" id="pilot_fpx_weight" value=0></input>
-		 <font color="red"><span id="pilot_fpx_lbs_error"></span></font>
-		 </p>
-
-		 <p>
-		 <label>Rear Passengers lbs:</label>
-         <input onkeyup = "makeCalculation()" type="number" id="pass_rear_weight" value=0></input>
-		 <font color="red"><span id="pass_rear_lbs_error"></span></font>
-		 </p>
-
-		 <p>
-		 <label>*Baggage area #1 (120 lbs max)lbs:</label>
-         <input onkeyup = "makeCalculation()" type="number" id="baggage1_weight"  value=0 ></input>
-         <font color="red"><span id="baggage1_lbs_error"></span></font>
-		 </p>
-
-		 <p>
-		 <label>*Baggage area #2 (50 lbs max)lbs:</label>
-         <input onkeyup = "makeCalculation()" type="number" id="baggage2_weight"  value=0 ></input>
-         <font color="red"><span id="baggage2_lbs_error"></span></font>
-		 </p>
-
-		 <p>
-		 <label>Fuel,Long range tanks(48 USG max usable) USG:</label>
-         <input onkeyup = "convert_litres('main_usg');" type="number" id="main_fuel_usg"  value=0 ></input>
-		 <label>Litres:</label>
-		 <input onkeyup = "convert_litres('main_litres');" type="number" id="main_fuel_litres" value=0></input>
-		 <font color="red"><span id="main_fuel_error"></span></font>
-		 </p>
-
-		 <p>
-		 <label>Estimated fuel burn USgph:</label>
-		 <input onkeyup="convert_litres('burn_usg');" type="number" id="est_fuel_burn_usgph" value=9></input>
-		 <label>lph:</label>
-		 <input onkeyup = "convert_litres('burn_litres');" type="number" id="est_fuel_burn_lph" value=34.1></input>
-		 <span id="fuel_burn_error" style="color:red"></span>
-		 </p>
-
-		 <p>
-		 <label>Estimated fuel use for flight, USG: </label>
-		 <input onkeyup = "convert_litres('est_fuel_usg');" type="number" id="flight_fuel_used_usg" value=0></input>
-		 <label>Litres:</label>
-		 <input onkeyup = "convert_litres('est_fuel_litres');" type="number" id="estimated_fuel_litres" value=0></input>
-		 <font color="red"><span id="fuel_for_flight_error"></span></font>
-		 </p>
+		<div class="Input">
+      <div>
+        <label for="pilot_fpx_weight">Pilot & front Passenger lbs:</label>
       </div>
+      <div>
+        <input onkeyup = "makeCalculation()" type="number" id="pilot_fpx_weight" value=0></input>
+      </div>
+		  <span class="errorOutput" id="pilot_fpx_lbs_error"></span>
+    </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="pass_rear_weight">Rear Passengers lbs:</label>
+       </div>
+       <div>
+         <input onkeyup = "makeCalculation()" type="number" id="pass_rear_weight" value=0></input>
+       </div>
+		   <span class="errorOutput" id="pass_rear_lbs_error" ></span>
+		 </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="baggage1_weight">*Baggage area #1 (120 lbs max)lbs:</label>
+       </div>
+       <div>
+         <input onkeyup = "makeCalculation()" type="number" id="baggage1_weight"  value=0 ></input>
+       </div>
+       <span class="errorOutput" id="baggage1_lbs_error"></span>
+		 </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="baggage2_weight">*Baggage area #2 (50 lbs max)lbs:</label>
+       </div>
+       <div>
+         <input onkeyup = "makeCalculation()" type="number" id="baggage2_weight"  value=0 ></input>
+       </div>
+       <span class="errorOutput" id="baggage2_lbs_error"></span>
+		 </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="main_fuel_usg">Fuel,Long range tanks(48 USG usable)</label>
+       </div>
+       <div>
+          USG:<input onkeyup = "convert_litres('main_usg');" type="number" id="main_fuel_usg"  value=0 ></input>
+       </div>
+       <div>
+		     <label for="main_fuel_litres">Litres:</label>
+		     <input onkeyup = "convert_litres('main_litres');" type="number" id="main_fuel_litres" value=0></input>
+       </div>
+		   <span class="errorOutput" id="main_fuel_error"></span>
+		 </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="est_fuel_burn_usgph">Estimated fuel burn</label>
+       </div>
+       <div>
+		     USgph:<input onkeyup="convert_litres('burn_usg');" type="number" id="est_fuel_burn_usgph" value=9></input>
+       </div>
+       <div>
+		     <label for="est_fuel_burn_lph">lph:</label>
+		     <input onkeyup = "convert_litres('burn_litres');" type="number" id="est_fuel_burn_lph" value=34.1></input>
+       </div>
+		   <span class="errorOutput" id="fuel_burn_error"></span>
+		 </div>
+
+		 <div class="Input">
+       <div>
+		     <label for="flight_fuel_used_usg">Estimated fuel use for flight</label>
+       </div>
+       <div>
+		     USG:<input onkeyup = "convert_litres('est_fuel_usg');" type="number" id="flight_fuel_used_usg" value=0></input>
+       </div>
+       <div>
+		     <label for="estimated_fuel_litres">Litres:</label>
+		     <input onkeyup = "convert_litres('est_fuel_litres');" type="number" id="estimated_fuel_litres" value=0></input>
+       </div>
+		   <span class="errorOutput" id="fuel_for_flight_error"></span>
+		 </div>
+
+   </div>
 
    </form>
    <p>

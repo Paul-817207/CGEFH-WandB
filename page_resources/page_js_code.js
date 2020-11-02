@@ -251,20 +251,6 @@ function makeCalculation() {
   //flight envelope or not and VERY CLEARLY display the results to the user, both in text and
   //image form. because people like pictures
 
-/* SMB code for reference only during bulding of EFH code
-  //check if the gross weight or the CofG is out of the safe envelope and set a flag to highlight that fact in RED
-  if ( take_off_weight > MAX_GROSS_WEIGHT ){
-	  is_over_Gross_TO_weight = true;
-  }else{
-	  is_over_Gross_TO_weight = false;
-  }
-
-  if ( landing_weight > MAX_GROSS_WEIGHT ) {
-	  is_over_Gross_LDG_weight = true;
-  }else{
-	  is_over_Gross_LDG_weight = false;
-  }
-*/
 
   //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   //this is where the calculated Centre of Gravity is compared to the safe envelope for flight and
@@ -283,7 +269,7 @@ function makeCalculation() {
      }else{
 	     is_outside_TO_CG_envelope = false;
      }
-	 
+
 	if ( CG_landing < 10.6 || CG_landing > 22.7 ){
 	   is_outside_LDG_CG_envelope = true;
     }else{
@@ -292,18 +278,18 @@ function makeCalculation() {
   */
   /*
   Six different areas are defined that I am labelling 1 through 6
-  Numbers 1 - 3 are outside of the UTILITY category envelope and inside of the NORMAL envelope and will be tested first 
+  Numbers 1 - 3 are outside of the UTILITY category envelope and inside of the NORMAL envelope and will be tested first
   because this is the most likely place that the CofG will be.
   NORMAL area defined by the individual 3 areas below
   #1 is a rectangle = (ARM > 40.5 && ARM <=47.3 && WEIGHT >= BasicEmptyWeight && WEIGHT <= MaxWeight2300)
   #2 is a rectangle = (ARM >= 38.5 && ARM >= 40.5 && WEIGHT > 2000 && WEIGHT <= 2300)
   #3 is a triangle[x,y] = at points  A[35.5,2000]; B[38.5,2300]; C[38.5,2000]
 
-  UTILITY area defined by the individual 3 area below 
+  UTILITY area defined by the individual 3 area below
   #4 is a rectangle = (ARM >= 35.0 && ARM >= 40.5 && WEIGHT >= BasicEmptyWeight && WEIGHT <= 1950)
   #5 is a rectangle = (ARM >= 35.5 && ARM <= 40.5 && WEIGHT > 1950 && WEIGHT <= 2000)
   #6 is a triangle[x,y] = at points A[35.0,1950]; B[35.5,2000]; C[35.5,1950]
-  
+
   Here is the formula used to determine if a point is inside or outside of the triangle area
   using the three triangle points A[x,y] B[x,y] and C[x,y] and the point P [x(CG_takeoff),y(take_off_weight)]
   W1 = ( Ax*(Cy-Ay)+(Py-Ay)*(Cx-Ax)-Px*(CY-Ay) ) / ( (By-Ay)*(Cx-Ax)-(Bx-Ax)*(Cy-Ay) )
@@ -313,10 +299,10 @@ function makeCalculation() {
   //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   //Now lets implement this in to code inside of a block of code so we can break out of the block and not do any further
   //tests because the answer has been found
-  
+
   findTOCG: {
     //first check NORMAL area #1 for take off CofG
-    if (CG_takeoff > 40.5 && CG_takeoff <= 47.3 && take_off_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1	  
+    if (CG_takeoff > 40.5 && CG_takeoff <= 47.3 && take_off_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1
 	  in_NORMAL_envelopeTO = true;
 	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
@@ -328,11 +314,11 @@ function makeCalculation() {
 	  in_NORMAL_envelopeTO = true;
 	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
-	  is_outside_TO_CG_envelope = false;	  
+	  is_outside_TO_CG_envelope = false;
       break findTOCG;
 	}
 	//point was not in areas above, next check if it is in UTILITY area #4
-	if (CG_takeoff >= 35.0 && CG_takeoff <= 40.5 && take_off_weight <= 1950){//all true means point is in UTILITY area #4	  
+	if (CG_takeoff >= 35.0 && CG_takeoff <= 40.5 && take_off_weight <= 1950){//all true means point is in UTILITY area #4
 	  in_NORMAL_envelopeTO = false;
 	  in_UTILITY_envelopeTO = true;
 	  is_over_Gross_TO_weight = false;
@@ -340,7 +326,7 @@ function makeCalculation() {
 	  break findTOCG;
     }
 	//point was not in areas above, next check if it is in UTILITY area #5
-	if (CG_takeoff >= 35.5 && CG_takeoff <= 40.5 && take_off_weight >= 1950 && take_off_weight <= 2000){//all true means point is in UTILITY area #5	  
+	if (CG_takeoff >= 35.5 && CG_takeoff <= 40.5 && take_off_weight >= 1950 && take_off_weight <= 2000){//all true means point is in UTILITY area #5
 	  in_NORMAL_envelopeTO = false;
 	  in_UTILITY_envelopeTO = true;
 	  is_over_Gross_TO_weight = false;
@@ -357,7 +343,7 @@ function makeCalculation() {
 	  in_UTILITY_envelopeTO = false;
 	  is_over_Gross_TO_weight = false;
 	  is_outside_TO_CG_envelope = false;
-	  break findTOCG;	
+	  break findTOCG;
 	}
 	//point was not in areas above, next check if it is in UTILITY triangle area #6
 	W1= ( 35.0*(2000-1950)+(take_off_weight-1950)*(35.5-35.0)-CG_takeoff*(2000-1950) )/( (1950-1950)*(35.5-35.0)-(35.5-35.0)*(2000-1950) );
@@ -367,7 +353,7 @@ function makeCalculation() {
 	  in_UTILITY_envelopeTO = true;
 	  is_over_Gross_TO_weight = false;
 	  is_outside_TO_CG_envelope = false;
-	  break findTOCG;	
+	  break findTOCG;
 	}
 	//NOW, if it is not in any of the above 6 areas, then it must be outside of the NORMAL and UTILITY envelope
 	//set all flags accordingly
@@ -380,10 +366,10 @@ function makeCalculation() {
 	  is_over_Gross_TO_weight = false;
 	}
   }//end of labeled block of code "findTOCG"
-  
+
   findLDGCG: {
 	//check NORMAL area #1 for landing CofG
-    if (CG_landing > 40.5 && CG_landing <= 47.3 && landing_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1	  
+    if (CG_landing > 40.5 && CG_landing <= 47.3 && landing_weight <= MAX_GROSS_WEIGHT){//all true means point is in NORMAL area #1
 	  in_NORMAL_envelopeLDG = true;
 	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
@@ -395,11 +381,11 @@ function makeCalculation() {
 	  in_NORMAL_envelopeLDG = true;
 	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
-	  is_outside_LDG_CG_envelope = false;	  
+	  is_outside_LDG_CG_envelope = false;
       break findLDGCG;
 	}
 	//point was not in areas above, next check if it is in UTILITY area #4
-	if (CG_landing >= 35.0 && CG_landing <= 40.5 && landing_weight <= 1950){//all true means point is in UTILITY area #4	  
+	if (CG_landing >= 35.0 && CG_landing <= 40.5 && landing_weight <= 1950){//all true means point is in UTILITY area #4
 	  in_NORMAL_envelopeLDG = false;
 	  in_UTILITY_envelopeLDG = true;
 	  is_over_Gross_LDG_weight = false;
@@ -407,7 +393,7 @@ function makeCalculation() {
 	  break findLDGCG;
     }
 	//point was not in areas above, next check if it is in UTILITY area #5
-	if (CG_landing >= 35.5 && CG_landing <= 40.5 && landing_weight >= 1950 && landing_weight <= 2000){//all true means point is in UTILITY area #5	  
+	if (CG_landing >= 35.5 && CG_landing <= 40.5 && landing_weight >= 1950 && landing_weight <= 2000){//all true means point is in UTILITY area #5
 	  in_NORMAL_envelopeLDG = false;
 	  in_UTILITY_envelopeLDG = true;
 	  is_over_Gross_LDG_weight = false;
@@ -423,8 +409,8 @@ function makeCalculation() {
 	  in_NORMAL_envelopeLDG = true;
 	  in_UTILITY_envelopeLDG = false;
 	  is_over_Gross_LDG_weight = false;
-	  is_outside_LDG_CG_envelope = false;	  
-      break findLDGCG;	
+	  is_outside_LDG_CG_envelope = false;
+      break findLDGCG;
 	}
 	//point was not in areas above, next check if it is in UTILITY triangle area #6
 	W1=( 35.0*(2000-1950)+(landing_weight-1950)*(35.5-35.0)-CG_landing*(2000-1950) )/( (1950-1950)*(35.5-35.0)-(35.5-35.0)*(2000-1950) );
@@ -433,8 +419,8 @@ function makeCalculation() {
 	  in_NORMAL_envelopeLDG = false;
 	  in_UTILITY_envelopeLDG = true;
 	  is_over_Gross_LDG_weight = false;
-	  is_outside_LDG_CG_envelope = false;	  
-      break findLDGCG;	
+	  is_outside_LDG_CG_envelope = false;
+      break findLDGCG;
 	}
 	//NOW, if it is not in any of the above 6 areas, then it must be outside of the NORMAL and UTILITY envelope
 	//set all flags accordingly
@@ -447,7 +433,7 @@ function makeCalculation() {
 	  is_over_Gross_LDG_weight = false;
 	}
   }//end of labeled block of code "findLDGCG
- 
+
 
   //calculate approximate flight time based on the fuel gallons entered and the expected fuel burn entered MINUS reserve time 30 minute
   TO_fuel_flight_time_minutes = ((main_fuel_volume_usg*(60 / entered_fuel_burn_usgph))-30);
@@ -459,17 +445,37 @@ function makeCalculation() {
 	  is_below_minimum_fuel_reserve = false;
   }
 
+	//New output results to the screen, improved appearance and readabilty
 
+	document.getElementById("output").innerHTML =
+	'<div class="outputGrid">' +
+		'<div class="outputHeading">--------</div>' +
+		'<div class="outputHeading">Take off configuration:</div>' +
+		'<div class="outputBox">Fuel quantity is</div>' + '<div class="outputBox">' + main_fuel_volume_usg + '&nbspusg</div>' +
+		'<div class="outputBox">Approximate flight time with 30 min. reserve is</div>' + '<div class="outputBox">' + ( ((TO_fuel_flight_time_minutes) > 0)?(TO_fuel_flight_time_minutes).toFixed(0): '<span style="color:red">(' + (TO_fuel_flight_time_minutes).toFixed(0)+ ') </span>') + '&nbspminutes</div>' +
+		'<div class="outputBox">Weight (max 2300lbs) is</div>' + '<div class="outputBox">' + (take_off_weight).toFixed(0) + '&nbsplbs&nbsp' + (is_over_Gross_TO_weight ? '<span style="color:red">is over max gross weight. WARNING</span>':'<span style="color:green">&nbspis OK</span>') + '</div>' +
+		'<div class="outputBox">Centre of Gravity is</div>' + '<div class="outputBox">' + CG_takeoff.toFixed(2) + (is_outside_TO_CG_envelope ? '<span style="color:red">&nbspOutside of CG envelope. WARNING</span>' : ((in_UTILITY_envelopeTO)?'<span style="color:blue">&nbspUTILITY</span>':'<span style="color:green">&nbspNORMAL</span>') ) + '</div>' +
+		'<div class="outputBox">Remaining Load to gross weight is</div>' + '<div class="outputBox">' + ( ((MAX_GROSS_WEIGHT - take_off_weight)<0)? '<span style="color:red">(' + (MAX_GROSS_WEIGHT - take_off_weight).toFixed(0) + ') </span>': (MAX_GROSS_WEIGHT - take_off_weight).toFixed(0) ) + '&nbsplbs' + '</div>' +
+
+		'<div class="outputHeading">----INCOMPLETE----</div>' +
+		'<div class="outputHeading">Estimated Landing configuration:</div>' +
+		'<div class="outputBox">Reserve fuel time, calculated at&nbsp' + FUEL_BURN_USGPH + '&nbspusgph&nbsp is about</div>' + '<div class="outputBox">' + landing_fuel_reserve_minutes.toFixed(1) + '&nbspminutes' + ( (is_below_minimum_fuel_reserve) ?  '<span style="color:red">WARNING, less than 30 minutes of fuel remaining at landing</span>' : '<span style="color:green">&nbspis OK</span>' ) + '</div>' +
+		'<div class="outputBox">Main fuel estimated is</div>' + '<div class="outputBox">' + landing_main_fuel_usg + "&nbspusg" + '</div>' +
+		'<div class="outputBox">Weight estimated (max =1220lbs)</div>' + '<div class="outputBox">' + (landing_weight).toFixed(0) + '&nbsplbs&nbsp' + (is_over_Gross_LDG_weight ? '<span style="color:red">is over max gross weight. WARNING</span>':'<span style="color:green">is OK') + '</div>' +
+		'<div class="outputBox">Centre of Gravity estimated (10.6 - 22.7)</div>' + '<div class="outputBox">' + CG_landing.toFixed(2) + (is_outside_LDG_CG_envelope ? '<span style="color:red">&nbspOutside of CG envelope. WARNING</span>':'<span style="color:green">&nbspis OK</span>') + '</div>' +
+	'</div>';
+
+/*OLD output format, for reference only during formatting the new output above
   //output the results to the screen
   if (true)//valid results on the entry form
   {
     document.getElementById("output").innerHTML =
     "<p><br>"
 	+ "Take off configuration:<br>"
-	+ "&nbsp&nbsp&nbspFuel quantity is&nbsp" + main_fuel_volume_usg + "&nbspusg<br>"
-	+ '&nbsp&nbsp&nbspApproximate flight time with 30 min. reserve is ' + ( ((TO_fuel_flight_time_minutes) > 0)?(TO_fuel_flight_time_minutes).toFixed(0): '<span style="color:red">(' + (TO_fuel_flight_time_minutes).toFixed(0)+ ') </span>') + '&nbspminutes<br>'
-	+ "&nbsp&nbsp&nbspWeight (max 2300lbs) is&nbsp " + (take_off_weight).toFixed(0) + "&nbsplbs&nbsp" + (is_over_Gross_TO_weight ? '<font color="red"><span>is over max gross weight. WARNING</span></font><br>':'<font color="green"><span>&nbspis OK</span></font><br>')
-	+ "&nbsp&nbsp&nbspCentre of Gravity is&nbsp" + CG_takeoff.toFixed(2) +  (is_outside_TO_CG_envelope ? '<font color="red"><span>&nbspOutside of CG envelope. WARNING</span></font><br>' : ((in_UTILITY_envelopeTO)?'<span style="color:blue">&nbspUTILITY envelope</span><br>':'<span style="color:green">&nbspNORMAL envelope</span><br>') )
+  	+ "&nbsp&nbsp&nbspFuel quantity is&nbsp" + main_fuel_volume_usg + "&nbspusg<br>"
+	  + '&nbsp&nbsp&nbspApproximate flight time with 30 min. reserve is ' + ( ((TO_fuel_flight_time_minutes) > 0)?(TO_fuel_flight_time_minutes).toFixed(0): '<span style="color:red">(' + (TO_fuel_flight_time_minutes).toFixed(0)+ ') </span>') + '&nbspminutes<br>'
+  	+ "&nbsp&nbsp&nbspWeight (max 2300lbs) is&nbsp " + (take_off_weight).toFixed(0) + "&nbsplbs&nbsp" + (is_over_Gross_TO_weight ? '<font color="red"><span>is over max gross weight. WARNING</span></font><br>':'<font color="green"><span>&nbspis OK</span></font><br>')
+	  + "&nbsp&nbsp&nbspCentre of Gravity is&nbsp" + CG_takeoff.toFixed(2) +  (is_outside_TO_CG_envelope ? '<font color="red"><span>&nbspOutside of CG envelope. WARNING</span></font><br>' : ((in_UTILITY_envelopeTO)?'<span style="color:blue">&nbspUTILITY envelope</span><br>':'<span style="color:green">&nbspNORMAL envelope</span><br>') )
 	+ "&nbsp&nbsp&nbspRemaining Load to gross weight is " + ( ((MAX_GROSS_WEIGHT - take_off_weight)<0)? '<span style="color:red">(' + (MAX_GROSS_WEIGHT - take_off_weight).toFixed(0) + ') </span>': (MAX_GROSS_WEIGHT - take_off_weight).toFixed(0) ) + "&nbsplbs<br><br>"
 	+ "Estimated landing configuration:<br>"
 	+ "&nbsp&nbsp&nbspReserve fuel time is about &nbsp" + (landing_fuel_reserve_minutes).toFixed(0) + "&nbspminutes calculated at&nbsp" + entered_fuel_burn_usgph + "&nbspusgph&nbsp" + ( (is_below_minimum_fuel_reserve) ?  '<font color="red"><span>WARNING, less than 30 minutes of fuel remaining at landing</span></font><br>' : '<font color="green"><span>&nbspis OK</span></font><br>' )
@@ -483,7 +489,7 @@ function makeCalculation() {
   {
     document.getElementById("output").innerHTML = "INVALID form data, Please complete the form or correct any mistakes entered";
   }
-
+*/
   //send the data to the chart function to display in chart form
   chart_it(take_off_weight, CG_takeoff, landing_weight, CG_landing,(is_outside_TO_CG_envelope || is_outside_LDG_CG_envelope || is_over_Gross_LDG_weight || is_over_Gross_TO_weight), is_below_minimum_fuel_reserve);
 
