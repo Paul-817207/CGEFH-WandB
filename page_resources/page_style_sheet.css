@@ -16,7 +16,7 @@ img {
 	grid-gap: .5rem;
 }
 .Input{
-	background-color: yellow;
+	background-color:  #FFE875;
 }
 .outputGrid{
 	display: grid;
@@ -25,10 +25,10 @@ grid-template-columns: minmax(auto,15rem) minmax(auto,8rem);
 }
 .outputHeading{
 grid-column: 1/3;
-	background-color: #FFE875;
+	background-color: #FFFFFF;
 }
 .outputBox{
-	background-color: #FFFFFF;
+	background-color: #a89371;
 }
 
 @media only screen and (max-width: 600px) {
